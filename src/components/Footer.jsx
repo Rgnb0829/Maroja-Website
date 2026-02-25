@@ -53,7 +53,7 @@ export default function Footer() {
                         <ul className="space-y-3">
                             <li className="flex items-start gap-3">
                                 <MapPin size={16} className="text-white/50 mt-0.5 shrink-0" />
-                                <span className="text-white/60 text-sm">Griya Tamansari 2, Bekasi, Jawa Barat</span>
+                                <span className="text-white/60 text-sm">Griya Tamansari 2, Srimartani, Piyungan, Bantul, Yogyakarta, 55792</span>
                             </li>
                             <li className="flex items-center gap-3">
                                 <Phone size={16} className="text-white/50 shrink-0" />
@@ -61,7 +61,7 @@ export default function Footer() {
                             </li>
                             <li className="flex items-center gap-3">
                                 <Mail size={16} className="text-white/50 shrink-0" />
-                                <span className="text-white/60 text-sm">masjid.rj@email.com</span>
+                                <span className="text-white/60 text-sm">masjid.rj@gmail.com</span>
                             </li>
                         </ul>
                     </div>
@@ -72,7 +72,7 @@ export default function Footer() {
             <div className="border-t border-white/10">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
                     <p className="text-center text-white/40 text-xs flex items-center justify-center gap-1">
-                        © 2026 Masjid Raudhatul Jannah. Dibuat dengan <Heart size={12} className="text-red-400" /> untuk umat.
+                        © 2026 LabS10. Dibuat dengan <Heart size={12} className="text-red-400" /> untuk umat.
                     </p>
                 </div>
             </div>
