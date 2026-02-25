@@ -64,7 +64,7 @@ export default function Kontak() {
                         <div className="rounded-2xl overflow-hidden border border-gray-100 shadow-sm mb-6">
                             <iframe
                                 title="Lokasi Masjid Raudhatul Jannah"
-                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3965.8663!2d107.0!3d-6.3!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwMTgnMDAuMCJTIDEwN8KwMDAnMDAuMCJF!5e0!3m2!1sid!2sid!4v1"
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3952.6183815233003!2d110.4912322108722!3d-7.830152092158281!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a51b0043bc4c1%3A0xa43c8385f7e9ed6d!2sLab%20S10!5e0!3m2!1sen!2sid!4v1772057468838!5m2!1sen!2sid"
                                 width="100%"
                                 height="300"
                                 style={{ border: 0 }}
@@ -81,7 +81,7 @@ export default function Kontak() {
                                 {
                                     icon: MapPin,
                                     label: 'Alamat',
-                                    value: 'Perumahan Griya Tamansari 2, Bekasi, Jawa Barat',
+                                    value: 'Perumahan Griya Tamansari 2, Kembangsari, Srimartani, Piyungan, Bantul, Yogyakarta, 55792',
                                 },
                                 {
                                     icon: Phone,
@@ -91,7 +91,7 @@ export default function Kontak() {
                                 {
                                     icon: Mail,
                                     label: 'Email',
-                                    value: 'masjid.rj@email.com',
+                                    value: 'masjid.rj@gmail.com',
                                 },
                             ].map((contact, i) => {
                                 const Icon = contact.icon
