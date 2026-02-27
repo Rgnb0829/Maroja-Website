@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
+import { SpeedInsights } from '@vercel/speed-insights/react'
 import { AuthProvider } from './contexts/AuthContext'
 import { DataProvider } from './contexts/DataContext'
 
@@ -56,6 +57,7 @@ function App() {
                         </Route>
                     </Routes>
                 </AnimatePresence>
+                <SpeedInsights />
             </DataProvider>
         </AuthProvider>
     )
