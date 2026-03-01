@@ -89,9 +89,9 @@ CREATE TABLE IF NOT EXISTS public.posts (
 
 ALTER TABLE public.posts ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Public can view posts" ON public.posts FOR SELECT USING (true);
-CREATE POLICY "Admins can insert posts" ON public.posts FOR INSERT WITH CHECK (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
-CREATE POLICY "Admins can update posts" ON public.posts FOR UPDATE USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
-CREATE POLICY "Admins can delete posts" ON public.posts FOR DELETE USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
+CREATE POLICY "Admins can insert posts" ON public.posts FOR INSERT WITH CHECK (EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
+CREATE POLICY "Admins can update posts" ON public.posts FOR UPDATE USING (EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
+CREATE POLICY "Admins can delete posts" ON public.posts FOR DELETE USING (EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
 
 -- 2. Tabel Finance (Keuangan)
 CREATE TABLE IF NOT EXISTS public.finance (
@@ -105,9 +105,9 @@ CREATE TABLE IF NOT EXISTS public.finance (
 
 ALTER TABLE public.finance ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Public can view finance" ON public.finance FOR SELECT USING (true);
-CREATE POLICY "Admins can insert finance" ON public.finance FOR INSERT WITH CHECK (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
-CREATE POLICY "Admins can update finance" ON public.finance FOR UPDATE USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
-CREATE POLICY "Admins can delete finance" ON public.finance FOR DELETE USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
+CREATE POLICY "Admins can insert finance" ON public.finance FOR INSERT WITH CHECK (EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
+CREATE POLICY "Admins can update finance" ON public.finance FOR UPDATE USING (EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
+CREATE POLICY "Admins can delete finance" ON public.finance FOR DELETE USING (EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
 
 -- 3. Tabel Profil Masjid (Pengaturan Global)
 CREATE TABLE IF NOT EXISTS public.profiles_masjid (
@@ -127,8 +127,8 @@ CREATE TABLE IF NOT EXISTS public.profiles_masjid (
 
 ALTER TABLE public.profiles_masjid ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Public can view profiles_masjid" ON public.profiles_masjid FOR SELECT USING (true);
-CREATE POLICY "Admins can update profiles_masjid" ON public.profiles_masjid FOR UPDATE USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
-CREATE POLICY "Admins can insert profiles_masjid" ON public.profiles_masjid FOR INSERT WITH CHECK (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
+CREATE POLICY "Admins can update profiles_masjid" ON public.profiles_masjid FOR UPDATE USING (EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
+CREATE POLICY "Admins can insert profiles_masjid" ON public.profiles_masjid FOR INSERT WITH CHECK (EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
 
 -- Bikin data default jika belum ada
 INSERT INTO public.profiles_masjid (id, name, address) VALUES (1, 'Masjid Raudhatul Jannah', 'Griya Tamansari 2') ON CONFLICT (id) DO NOTHING;
@@ -146,9 +146,9 @@ CREATE TABLE IF NOT EXISTS public.pengurus (
 
 ALTER TABLE public.pengurus ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Public can view pengurus" ON public.pengurus FOR SELECT USING (true);
-CREATE POLICY "Admins can insert pengurus" ON public.pengurus FOR INSERT WITH CHECK (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
-CREATE POLICY "Admins can update pengurus" ON public.pengurus FOR UPDATE USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
-CREATE POLICY "Admins can delete pengurus" ON public.pengurus FOR DELETE USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
+CREATE POLICY "Admins can insert pengurus" ON public.pengurus FOR INSERT WITH CHECK (EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
+CREATE POLICY "Admins can update pengurus" ON public.pengurus FOR UPDATE USING (EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
+CREATE POLICY "Admins can delete pengurus" ON public.pengurus FOR DELETE USING (EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
 
 -- 5. Tabel Inventaris
 CREATE TABLE IF NOT EXISTS public.inventaris (
@@ -161,10 +161,10 @@ CREATE TABLE IF NOT EXISTS public.inventaris (
 );
 
 ALTER TABLE public.inventaris ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Admins can view inventaris" ON public.inventaris FOR SELECT USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
-CREATE POLICY "Admins can insert inventaris" ON public.inventaris FOR INSERT WITH CHECK (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
-CREATE POLICY "Admins can update inventaris" ON public.inventaris FOR UPDATE USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
-CREATE POLICY "Admins can delete inventaris" ON public.inventaris FOR DELETE USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
+CREATE POLICY "Admins can view inventaris" ON public.inventaris FOR SELECT USING (EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
+CREATE POLICY "Admins can insert inventaris" ON public.inventaris FOR INSERT WITH CHECK (EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
+CREATE POLICY "Admins can update inventaris" ON public.inventaris FOR UPDATE USING (EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
+CREATE POLICY "Admins can delete inventaris" ON public.inventaris FOR DELETE USING (EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
 
 -- 6. Tabel Jadwal Jumat (jumat_schedules)
 CREATE TABLE IF NOT EXISTS public.jumat_schedules (
@@ -178,9 +178,9 @@ CREATE TABLE IF NOT EXISTS public.jumat_schedules (
 
 ALTER TABLE public.jumat_schedules ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Public can view jumat_schedules" ON public.jumat_schedules FOR SELECT USING (true);
-CREATE POLICY "Admins can insert jumat_schedules" ON public.jumat_schedules FOR INSERT WITH CHECK (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
-CREATE POLICY "Admins can update jumat_schedules" ON public.jumat_schedules FOR UPDATE USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
-CREATE POLICY "Admins can delete jumat_schedules" ON public.jumat_schedules FOR DELETE USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
+CREATE POLICY "Admins can insert jumat_schedules" ON public.jumat_schedules FOR INSERT WITH CHECK (EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
+CREATE POLICY "Admins can update jumat_schedules" ON public.jumat_schedules FOR UPDATE USING (EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
+CREATE POLICY "Admins can delete jumat_schedules" ON public.jumat_schedules FOR DELETE USING (EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
 
 -- 7. Tabel Distribusi Zakat dan Qurban (zakat_qurban_distribution)
 CREATE TABLE IF NOT EXISTS public.zakat_qurban_distribution (
@@ -195,6 +195,6 @@ CREATE TABLE IF NOT EXISTS public.zakat_qurban_distribution (
 
 ALTER TABLE public.zakat_qurban_distribution ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Public can view zakat_qurban_distribution" ON public.zakat_qurban_distribution FOR SELECT USING (true);
-CREATE POLICY "Admins can insert zakat_qurban_distribution" ON public.zakat_qurban_distribution FOR INSERT WITH CHECK (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
-CREATE POLICY "Admins can update zakat_qurban_distribution" ON public.zakat_qurban_distribution FOR UPDATE USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
-CREATE POLICY "Admins can delete zakat_qurban_distribution" ON public.zakat_qurban_distribution FOR DELETE USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
+CREATE POLICY "Admins can insert zakat_qurban_distribution" ON public.zakat_qurban_distribution FOR INSERT WITH CHECK (EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
+CREATE POLICY "Admins can update zakat_qurban_distribution" ON public.zakat_qurban_distribution FOR UPDATE USING (EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
+CREATE POLICY "Admins can delete zakat_qurban_distribution" ON public.zakat_qurban_distribution FOR DELETE USING (EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role IN ('admin', 'superadmin')));
