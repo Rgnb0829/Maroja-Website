@@ -2,13 +2,20 @@
 -- 0. Fungsi Cek Admin (Supaya tidak terjadi Infinite Recursion saat cek RLS)
 CREATE OR REPLACE FUNCTION public.is_admin()
 RETURNS boolean
-LANGUAGE sql
+LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = public
 AS $$
-  SELECT public.is_admin();
+DECLARE
+  is_adm boolean;
+BEGIN
+  SELECT (role IN ('admin', 'superadmin')) INTO is_adm
+  FROM public.users
+  WHERE id = auth.uid();
+  
+  RETURN COALESCE(is_adm, false);
+END;
 $$;
-
 -- ==========================================
 -- SKEMA DATABASE MASJID RAUDHATUL JANNAH
 -- Copy dan Paste script ini di menu "SQL Editor" pada dashboard Supabase Anda.
