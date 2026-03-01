@@ -191,8 +191,15 @@ CREATE TABLE IF NOT EXISTS public.inventaris (
     quantity INTEGER NOT NULL DEFAULT 0,
     condition TEXT,
     notes TEXT,
+    location TEXT,
+    "lastUpdated" TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
+
+ALTER TABLE public.inventaris 
+ADD COLUMN IF NOT EXISTS location TEXT,
+ADD COLUMN IF NOT EXISTS "lastUpdated" TEXT;
+
 
 ALTER TABLE public.inventaris ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Admins can view inventaris" ON public.inventaris;
