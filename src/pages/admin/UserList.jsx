@@ -18,7 +18,7 @@ export default function UserList() {
         try {
             setLoading(true)
             const { data, error } = await supabase
-                .from('profiles')
+                .from('users')
                 .select('*')
                 .eq('role', 'jamaah')
                 .order('created_at', { ascending: false })
@@ -37,7 +37,7 @@ export default function UserList() {
         try {
             setActionLoading(userId)
             const { data, error } = await supabase
-                .from('profiles')
+                .from('users')
                 .update({ is_verified: !currentStatus })
                 .eq('id', userId)
                 .select()

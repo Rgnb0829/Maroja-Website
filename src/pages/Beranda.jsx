@@ -36,7 +36,7 @@ export default function Beranda() {
                     return
                 }
                 const { count, error } = await supabase
-                    .from('profiles')
+                    .from('users')
                     .select('*', { count: 'exact', head: true })
                     .eq('role', 'jamaah')
 

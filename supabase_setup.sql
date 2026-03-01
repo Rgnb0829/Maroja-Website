@@ -10,7 +10,7 @@ DECLARE
   is_adm boolean;
 BEGIN
   SELECT (role IN ('admin', 'superadmin')) INTO is_adm
-  FROM public.users
+  FROM public.profiles
   WHERE id = auth.uid();
   
   RETURN COALESCE(is_adm, false);
@@ -22,7 +22,7 @@ $$;
 -- ==========================================
 
 -- 1. Buat Tabel "users" untuk menampung profil jamaah dan admin
-CREATE TABLE IF NOT EXISTS public.users (
+CREATE TABLE IF NOT EXISTS public.profiles (
     id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
     full_name TEXT,
     phone_number TEXT UNIQUE,
@@ -33,35 +33,35 @@ CREATE TABLE IF NOT EXISTS public.users (
 );
 
 -- 2. Aktifkan Row Level Security (Keamanan tingkat baris)
-ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 
 -- 3. Policy (Aturan): Jamaah cuma bisa melihat datanya sendiri
-DROP POLICY IF EXISTS "Users can view own profile" ON public.users;
+DROP POLICY IF EXISTS "Users can view own profile" ON public.profiles;
 CREATE POLICY "Users can view own profile" 
-ON public.users FOR SELECT 
+ON public.profiles FOR SELECT 
 USING (auth.uid() = id);
 
 -- 4. Policy: Admin/Superadmin bisa melihat semua data profil
-DROP POLICY IF EXISTS "Admins can view all profiles" ON public.users;
+DROP POLICY IF EXISTS "Admins can view all profiles" ON public.profiles;
 CREATE POLICY "Admins can view all profiles" 
-ON public.users FOR SELECT 
+ON public.profiles FOR SELECT 
 USING (
   public.is_admin()
 );
 
 -- 5. Policy: Admin bisa mengupdate (verifikasi) profil jamaah
-DROP POLICY IF EXISTS "Admins can update profiles" ON public.users;
+DROP POLICY IF EXISTS "Admins can update profiles" ON public.profiles;
 CREATE POLICY "Admins can update profiles" 
-ON public.users FOR UPDATE 
+ON public.profiles FOR UPDATE 
 USING (
   public.is_admin()
 );
 
--- 6. Fungsi Trigger: Otomatis buat profil di public.users tiap kali ada mendaftar di auth.users (Supabase Auth)
+-- 6. Fungsi Trigger: Otomatis buat profil di public.profiles tiap kali ada mendaftar di auth.users (Supabase Auth)
 CREATE OR REPLACE FUNCTION public.handle_new_user() 
 RETURNS TRIGGER AS $$
 BEGIN
-  INSERT INTO public.users (id, phone_number, role, is_verified)
+  INSERT INTO public.profiles (id, phone_number, role, is_verified)
   -- Jika mendaftar admin manual, role di set ke 'jamaah' dulu, nanti admin ubah manual ke 'admin'
   VALUES (new.id, new.phone, 'jamaah', false);
   RETURN new;
@@ -80,7 +80,7 @@ CREATE TRIGGER on_auth_user_created
 /*
 Setelah Anda daftar akun Admin Anda di menu Authentication (Sign Up), jalankan query ini untuk memberi hak akses admin pada diri Anda sendiri:
 
-UPDATE public.users 
+UPDATE public.profiles 
 SET role = 'superadmin', is_verified = true 
 WHERE id = '45abf536-50da-4e34-8f2a-0c10bbfc1c3b';
 */
