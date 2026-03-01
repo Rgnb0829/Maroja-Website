@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Plus, Search, Trash2, Edit, TrendingUp, TrendingDown, Wallet, ArrowUpRight, ArrowDownRight } from 'lucide-react'
+import { Plus, Search, Trash2, Edit, TrendingUp, TrendingDown, Wallet, ArrowUpRight, ArrowDownRight, Download } from 'lucide-react'
+import * as XLSX from 'xlsx'
 import { useData } from '../../contexts/DataContext'
 
 function formatCurrency(amount) {
@@ -16,13 +17,52 @@ export default function FinanceList() {
     const { finance, financeSummary, deleteTransaction } = useData()
     const [search, setSearch] = useState('')
     const [typeFilter, setTypeFilter] = useState('all')
+    const [startDate, setStartDate] = useState('')
+    const [endDate, setEndDate] = useState('')
     const [deleteConfirm, setDeleteConfirm] = useState(null)
 
     const filtered = finance.filter((tx) => {
         const matchType = typeFilter === 'all' || tx.type === typeFilter
         const matchSearch = tx.description.toLowerCase().includes(search.toLowerCase())
-        return matchType && matchSearch
+
+        // Date Range Filtering logic
+        let matchDate = true;
+        if (startDate || endDate) {
+            const txDate = new Date(tx.date);
+            const start = startDate ? new Date(startDate) : new Date('2000-01-01');
+            const end = endDate ? new Date(endDate) : new Date('2100-01-01');
+
+            // Set end date to end of day to include transactions on that day
+            end.setHours(23, 59, 59, 999);
+            start.setHours(0, 0, 0, 0);
+
+            matchDate = txDate >= start && txDate <= end;
+        }
+
+        return matchType && matchSearch && matchDate
     })
+
+    const handleExportExcel = () => {
+        if (filtered.length === 0) return alert('Tidak ada data untuk diekspor.');
+
+        const dataToExport = filtered.map((tx, index) => ({
+            'No': index + 1,
+            'Tanggal': tx.date,
+            'Deskripsi': tx.description,
+            'Jenis': tx.type === 'in' ? 'Pemasukan' : 'Pengeluaran',
+            'Jumlah (Rp)': tx.amount
+        }));
+
+        const ws = XLSX.utils.json_to_sheet(dataToExport);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Laporan Keuangan");
+
+        const fileName = startDate && endDate
+            ? `Laporan_Keuangan_Masjid_${startDate}_sd_${endDate}.xlsx`
+            : `Laporan_Keuangan_Masjid_Keseluruhan.xlsx`;
+
+        XLSX.writeFile(wb, fileName);
+    }
 
     const handleDelete = (id) => {
         deleteTransaction(id)
@@ -74,35 +114,70 @@ export default function FinanceList() {
                 })}
             </div>
 
-            {/* Filters */}
-            <div className="flex flex-col sm:flex-row gap-3 mb-6">
-                <div className="relative flex-1 max-w-xs">
-                    <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                    <input
-                        type="text"
-                        placeholder="Cari transaksi..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        className="w-full pl-9 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30"
-                    />
+            {/* Filters & Export */}
+            <div className="bg-white rounded-2xl p-4 border border-gray-100 mb-6 shadow-sm">
+                {/* Top Row: Date Range & Export */}
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-gray-100 pb-4 mb-4">
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-4 w-full sm:w-auto">
+                        <div className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-lg border border-gray-200 w-full sm:w-auto">
+                            <label className="text-xs font-medium text-gray-500 shrink-0">Dari:</label>
+                            <input
+                                type="date"
+                                value={startDate}
+                                onChange={(e) => setStartDate(e.target.value)}
+                                className="bg-transparent text-sm text-gray-700 outline-none w-full"
+                            />
+                        </div>
+                        <div className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-lg border border-gray-200 w-full sm:w-auto">
+                            <label className="text-xs font-medium text-gray-500 shrink-0">Sampai:</label>
+                            <input
+                                type="date"
+                                value={endDate}
+                                onChange={(e) => setEndDate(e.target.value)}
+                                className="bg-transparent text-sm text-gray-700 outline-none w-full"
+                            />
+                        </div>
+                    </div>
+
+                    <button
+                        onClick={handleExportExcel}
+                        disabled={filtered.length === 0}
+                        className="w-full sm:w-auto flex items-center justify-center gap-2 bg-emerald-600 text-white px-5 py-2.5 rounded-xl font-medium text-sm hover:bg-emerald-700 hover:shadow-lg hover:shadow-emerald-600/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        <Download size={16} /> Export Excel
+                    </button>
                 </div>
-                <div className="flex gap-2">
-                    {[
-                        { key: 'all', label: 'Semua' },
-                        { key: 'in', label: 'Masuk' },
-                        { key: 'out', label: 'Keluar' },
-                    ].map((opt) => (
-                        <button
-                            key={opt.key}
-                            onClick={() => setTypeFilter(opt.key)}
-                            className={`px-3 py-2 rounded-lg text-xs font-medium transition-all ${typeFilter === opt.key
-                                    ? 'bg-primary text-white'
+
+                {/* Bottom Row: Search & Type */}
+                <div className="flex flex-col sm:flex-row gap-4">
+                    <div className="relative flex-1">
+                        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                        <input
+                            type="text"
+                            placeholder="Cari transaksi..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            className="w-full pl-9 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30"
+                        />
+                    </div>
+                    <div className="flex gap-2">
+                        {[
+                            { key: 'all', label: 'Semua' },
+                            { key: 'in', label: 'Masuk' },
+                            { key: 'out', label: 'Keluar' },
+                        ].map((opt) => (
+                            <button
+                                key={opt.key}
+                                onClick={() => setTypeFilter(opt.key)}
+                                className={`px-4 py-2 rounded-xl text-xs font-medium transition-all ${typeFilter === opt.key
+                                    ? 'bg-primary text-white shadow-md shadow-primary/20'
                                     : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
-                                }`}
-                        >
-                            {opt.label}
-                        </button>
-                    ))}
+                                    }`}
+                            >
+                                {opt.label}
+                            </button>
+                        ))}
+                    </div>
                 </div>
             </div>
 

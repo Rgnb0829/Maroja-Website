@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { Link } from 'react-router-dom'
 import { Calendar, Search } from 'lucide-react'
 import { useData } from '../contexts/DataContext'
 
@@ -21,13 +22,21 @@ const item = {
 export default function Warta() {
     const [activeCategory, setActiveCategory] = useState('Semua')
     const [search, setSearch] = useState('')
-    const { posts } = useData()
+    const { posts, isLoading } = useData()
 
     const filtered = posts.filter((post) => {
         const matchCategory = activeCategory === 'Semua' || post.category === activeCategory
         const matchSearch = post.title.toLowerCase().includes(search.toLowerCase())
         return matchCategory && matchSearch
     })
+
+    if (isLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <div className="w-8 h-8 rounded-full border-4 border-primary/30 border-t-primary animate-spin" />
+            </div>
+        )
+    }
 
     return (
         <motion.div
@@ -96,8 +105,11 @@ export default function Warta() {
                                 key={post.id}
                                 variants={item}
                                 whileHover={{ y: -4 }}
-                                className="group bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-xl hover:shadow-primary/5 transition-all duration-300"
+                                className="group bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 relative"
                             >
+                                <Link to={`/warta/${post.id}`} className="absolute inset-0 z-10">
+                                    <span className="sr-only">Baca selengkapnya {post.title}</span>
+                                </Link>
                                 <div className="aspect-[16/10] bg-gradient-to-br from-accent to-accent-dark flex items-center justify-center overflow-hidden">
                                     {post.image ? (
                                         <img src={post.image} alt={post.title} className="w-full h-full object-cover" />

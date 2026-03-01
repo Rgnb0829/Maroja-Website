@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { MapPin, Phone, Mail, Send, Truck, Heart, HelpCircle } from 'lucide-react'
+import { MapPin, Phone, Mail, Send, Truck, Heart, HelpCircle, Facebook, Instagram, Youtube } from 'lucide-react'
+import { useData } from '../contexts/DataContext'
 
 const serviceTypes = [
     { value: '', label: 'Pilih Jenis Layanan' },
@@ -11,6 +12,7 @@ const serviceTypes = [
 ]
 
 export default function Kontak() {
+    const { profile, isLoading } = useData()
     const [form, setForm] = useState({
         nama: '',
         phone: '',
@@ -26,6 +28,14 @@ export default function Kontak() {
             setSubmitted(false)
             setForm({ nama: '', phone: '', layanan: '', pesan: '' })
         }, 3000)
+    }
+
+    if (isLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <div className="w-8 h-8 rounded-full border-4 border-primary/30 border-t-primary animate-spin" />
+            </div>
+        )
     }
 
     return (
@@ -46,7 +56,7 @@ export default function Kontak() {
                         <p className="text-white/60 text-sm font-medium mb-2 uppercase tracking-wider">Hubungi Kami</p>
                         <h1 className="text-3xl lg:text-5xl font-bold text-white mb-4">Kontak & Layanan</h1>
                         <p className="text-white/70 max-w-xl">
-                            Hubungi kami untuk informasi atau permohonan layanan Masjid Raudhatul Jannah.
+                            Hubungi kami untuk informasi atau permohonan layanan {profile?.name || 'Masjid Raudhatul Jannah'}.
                         </p>
                     </motion.div>
                 </div>
@@ -63,7 +73,7 @@ export default function Kontak() {
                         {/* Google Maps */}
                         <div className="rounded-2xl overflow-hidden border border-gray-100 shadow-sm mb-6">
                             <iframe
-                                title="Lokasi Masjid Raudhatul Jannah"
+                                title="Lokasi Masjid"
                                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3952.6183815233003!2d110.4912322108722!3d-7.830152092158281!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a51b0043bc4c1%3A0xa43c8385f7e9ed6d!2sLab%20S10!5e0!3m2!1sen!2sid!4v1772057468838!5m2!1sen!2sid"
                                 width="100%"
                                 height="300"
@@ -81,17 +91,17 @@ export default function Kontak() {
                                 {
                                     icon: MapPin,
                                     label: 'Alamat',
-                                    value: 'Perumahan Griya Tamansari 2, Kembangsari, Srimartani, Piyungan, Bantul, Yogyakarta, 55792',
+                                    value: profile?.address || 'Alamat Belum Diatur',
                                 },
                                 {
                                     icon: Phone,
                                     label: 'Telepon',
-                                    value: '0812-xxxx-xxxx (Ketua Takmir)',
+                                    value: profile?.phone || 'Telepon Belum Diatur',
                                 },
                                 {
                                     icon: Mail,
                                     label: 'Email',
-                                    value: 'masjid.rj@gmail.com',
+                                    value: profile?.email || 'Email Belum Diatur',
                                 },
                             ].map((contact, i) => {
                                 const Icon = contact.icon
@@ -112,6 +122,30 @@ export default function Kontak() {
                                 )
                             })}
                         </div>
+
+                        {/* Social Media Links */}
+                        {(profile?.facebook || profile?.instagram || profile?.youtube) && (
+                            <div className="mt-8">
+                                <h3 className="font-bold text-gray-900 mb-4">Sosial Media</h3>
+                                <div className="flex gap-3">
+                                    {profile.facebook && (
+                                        <a href={profile.facebook} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 bg-[#1877F2]/10 text-[#1877F2] rounded-lg hover:bg-[#1877F2]/20 transition-colors font-medium text-sm">
+                                            <Facebook size={18} /> Facebook
+                                        </a>
+                                    )}
+                                    {profile.instagram && (
+                                        <a href={profile.instagram} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 bg-[#E4405F]/10 text-[#E4405F] rounded-lg hover:bg-[#E4405F]/20 transition-colors font-medium text-sm">
+                                            <Instagram size={18} /> Instagram
+                                        </a>
+                                    )}
+                                    {profile.youtube && (
+                                        <a href={profile.youtube} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 bg-[#FF0000]/10 text-[#FF0000] rounded-lg hover:bg-[#FF0000]/20 transition-colors font-medium text-sm">
+                                            <Youtube size={18} /> YouTube
+                                        </a>
+                                    )}
+                                </div>
+                            </div>
+                        )}
 
                         {/* Quick Services */}
                         <div className="mt-8">

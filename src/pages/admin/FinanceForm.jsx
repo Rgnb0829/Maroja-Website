@@ -34,18 +34,23 @@ export default function FinanceForm() {
         }
     }, [id])
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
         setSaving(true)
 
-        setTimeout(() => {
+        try {
             if (isEdit) {
-                updateTransaction(Number(id), form)
+                await updateTransaction(Number(id), form)
             } else {
-                addTransaction(form)
+                await addTransaction(form)
             }
             navigate('/admin/keuangan')
-        }, 300)
+        } catch (error) {
+            console.error("Error saving transaction:", error)
+            alert("Gagal menyimpan transaksi. Silakan coba lagi.")
+        } finally {
+            setSaving(false)
+        }
     }
 
     return (
@@ -81,8 +86,8 @@ export default function FinanceForm() {
                                 type="button"
                                 onClick={() => setForm({ ...form, type: 'in' })}
                                 className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-medium border-2 transition-all ${form.type === 'in'
-                                        ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
-                                        : 'border-gray-200 text-gray-500 hover:border-gray-300'
+                                    ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
+                                    : 'border-gray-200 text-gray-500 hover:border-gray-300'
                                     }`}
                             >
                                 ↗ Pemasukan
@@ -91,8 +96,8 @@ export default function FinanceForm() {
                                 type="button"
                                 onClick={() => setForm({ ...form, type: 'out' })}
                                 className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-medium border-2 transition-all ${form.type === 'out'
-                                        ? 'border-red-500 bg-red-50 text-red-700'
-                                        : 'border-gray-200 text-gray-500 hover:border-gray-300'
+                                    ? 'border-red-500 bg-red-50 text-red-700'
+                                    : 'border-gray-200 text-gray-500 hover:border-gray-300'
                                     }`}
                             >
                                 ↘ Pengeluaran

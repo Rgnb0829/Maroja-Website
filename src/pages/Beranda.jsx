@@ -1,10 +1,12 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { ArrowRight, Heart, Calendar, ChevronRight, Landmark } from 'lucide-react'
 import PrayerSchedule from '../components/PrayerSchedule'
+import JadwalJumatCard from '../components/JadwalJumatCard'
 import QrisModal from '../components/QrisModal'
 import { useData } from '../contexts/DataContext'
+import { supabase } from '../lib/supabase'
 
 const container = {
     hidden: { opacity: 0 },
@@ -21,8 +23,44 @@ const item = {
 
 export default function Beranda() {
     const [qrisOpen, setQrisOpen] = useState(false)
-    const { posts } = useData()
+    const [jamaahCount, setJamaahCount] = useState(0)
+    const { posts, isLoading } = useData()
     const latestPosts = posts.slice(0, 3)
+
+    useEffect(() => {
+        const fetchUserCount = async () => {
+            try {
+                // Ignore if in mock mode and no supabase configured
+                if (!import.meta.env.VITE_SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL.includes('your-project-id')) {
+                    setJamaahCount(500) // Dummy fallback
+                    return
+                }
+                const { count, error } = await supabase
+                    .from('profiles')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('role', 'jamaah')
+
+                if (error) {
+                    console.error("Supabase count error:", error)
+                }
+
+                if (!error && count !== null) {
+                    setJamaahCount(count)
+                }
+            } catch (err) {
+                console.error("Failed to fetch jamaah count:", err)
+            }
+        }
+        fetchUserCount()
+    }, [])
+
+    if (isLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <div className="w-8 h-8 rounded-full border-4 border-primary/30 border-t-primary animate-spin" />
+            </div>
+        )
+    }
 
     return (
         <>
@@ -93,7 +131,7 @@ export default function Beranda() {
                         className="mt-16 grid grid-cols-3 gap-4 max-w-md"
                     >
                         {[
-                            { value: '500+', label: 'Jamaah' },
+                            { value: `${jamaahCount}`, label: 'Jamaah' },
                             { value: '5x', label: 'Shalat Berjamaah' },
                             { value: '2x', label: 'Kajian / Minggu' },
                         ].map((stat, i) => (
@@ -106,9 +144,16 @@ export default function Beranda() {
                 </div>
             </section>
 
-            {/* Prayer Schedule */}
-            <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-10">
-                <PrayerSchedule />
+            {/* Prayer & Jumat Schedule */}
+            <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 md:-mt-12 relative z-10">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div className="lg:col-span-2">
+                        <PrayerSchedule />
+                    </div>
+                    <div className="lg:col-span-1">
+                        <JadwalJumatCard />
+                    </div>
+                </div>
             </section>
 
             {/* Infaq Digital Banner */}
@@ -180,8 +225,11 @@ export default function Beranda() {
                             key={post.id}
                             variants={item}
                             whileHover={{ y: -4 }}
-                            className="group bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-xl hover:shadow-primary/5 transition-shadow duration-300"
+                            className="group bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-xl hover:shadow-primary/5 transition-shadow duration-300 relative"
                         >
+                            <Link to={`/warta/${post.id}`} className="absolute inset-0 z-10">
+                                <span className="sr-only">Baca selengkapnya {post.title}</span>
+                            </Link>
                             {/* Image */}
                             <div className="aspect-[16/10] bg-gradient-to-br from-accent to-accent-dark flex items-center justify-center overflow-hidden">
                                 {post.image ? (

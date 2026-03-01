@@ -50,20 +50,25 @@ export default function PostForm() {
         reader.readAsDataURL(file)
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
         setSaving(true)
 
         const postData = { ...form, image: imagePreview }
 
-        setTimeout(() => {
+        try {
             if (isEdit) {
-                updatePost(Number(id), postData)
+                await updatePost(Number(id), postData)
             } else {
-                addPost(postData)
+                await addPost(postData)
             }
             navigate('/admin/posts')
-        }, 300)
+        } catch (error) {
+            console.error("Error saving post:", error)
+            alert("Gagal menyimpan berita. Silakan coba lagi.")
+        } finally {
+            setSaving(false)
+        }
     }
 
     return (

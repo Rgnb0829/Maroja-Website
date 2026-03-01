@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, QrCode, Smartphone } from 'lucide-react'
+import { X, QrCode, Smartphone, Download } from 'lucide-react'
 
 export default function QrisModal({ isOpen, onClose }) {
     return (
@@ -53,10 +53,20 @@ export default function QrisModal({ isOpen, onClose }) {
                             </div>
 
                             {/* Instructions */}
-                            <div className="flex items-start gap-3 text-sm text-gray-500">
+                            <div className="flex items-start gap-3 text-sm text-gray-500 mb-6">
                                 <Smartphone size={18} className="text-primary/50 mt-0.5 shrink-0" />
-                                <p>Screenshot QRIS di atas, lalu buka aplikasi m-Banking atau e-Wallet Anda untuk melakukan pembayaran.</p>
+                                <p>Buka aplikasi m-Banking atau e-Wallet Anda untuk melakukan pembayaran dengan fitur QRIS.</p>
                             </div>
+
+                            {/* Download Button */}
+                            <a
+                                href="/qris-placeholder.png" // Ganti dengan path gambar QRIS asli nanti
+                                download="QRIS-Masjid-Raudhatul-Jannah.png"
+                                className="w-full flex items-center justify-center gap-2 bg-primary text-white py-3.5 rounded-xl font-semibold hover:bg-primary-dark hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-[0.98]"
+                            >
+                                <Download size={18} />
+                                Download QRIS
+                            </a>
                         </div>
                     </motion.div>
                 </motion.div>

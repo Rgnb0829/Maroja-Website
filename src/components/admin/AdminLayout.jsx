@@ -1,13 +1,19 @@
 import { useState } from 'react'
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Newspaper, Wallet, LogOut, Menu, X, ChevronRight } from 'lucide-react'
+import { LayoutDashboard, Newspaper, Wallet, Settings, Users, Box, LogOut, Menu, X, ChevronRight, UserCheck, CalendarDays, Gift } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
 
 const sidebarLinks = [
     { name: 'Dashboard', path: '/admin', icon: LayoutDashboard },
+    { name: 'Jadwal Jumat', path: '/admin/jumat', icon: CalendarDays },
+    { name: 'Zakat & Qurban', path: '/admin/zakat', icon: Gift },
     { name: 'Kelola Berita', path: '/admin/posts', icon: Newspaper },
     { name: 'Kelola Keuangan', path: '/admin/keuangan', icon: Wallet },
-]
+    { name: 'Data Jamaah', path: '/admin/users', icon: UserCheck },
+    { name: 'Kepengurusan', path: '/admin/pengurus', icon: Users },
+    { name: 'Inventaris', path: '/admin/inventaris', icon: Box },
+    { name: 'Profil Website', path: '/admin/profile', icon: Settings }
+];
 
 export default function AdminLayout() {
     const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -73,8 +79,8 @@ export default function AdminLayout() {
                                     to={link.path}
                                     onClick={() => setSidebarOpen(false)}
                                     className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${active
-                                            ? 'bg-white/15 text-white'
-                                            : 'text-white/60 hover:text-white hover:bg-white/5'
+                                        ? 'bg-white/15 text-white'
+                                        : 'text-white/60 hover:text-white hover:bg-white/5'
                                         }`}
                                 >
                                     <Icon size={18} />
