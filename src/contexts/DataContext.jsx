@@ -83,7 +83,7 @@ export function DataProvider({ children }) {
     }
 
     const updatePost = async (id, updates) => {
-        const { error } = await supabase.from('posts').update(updates).eq('id', id)
+        const { error } = await supabase.from('posts').update(updates).eq('id', id).select().single()
         if (error) throw error
         setPosts((prev) => prev.map((p) => (p.id === id ? { ...p, ...updates } : p)))
     }
@@ -110,7 +110,7 @@ export function DataProvider({ children }) {
     }
 
     const updateTransaction = async (id, updates) => {
-        const { error } = await supabase.from('finance').update({ ...updates, amount: Number(updates.amount || 0) }).eq('id', id)
+        const { error } = await supabase.from('finance').update({ ...updates, amount: Number(updates.amount || 0) }).eq('id', id).select().single()
         if (error) throw error
         setFinance((prev) =>
             prev.map((t) => (t.id === id ? { ...t, ...updates, amount: Number(updates.amount || t.amount) } : t))
@@ -135,7 +135,7 @@ export function DataProvider({ children }) {
 
     // Profile update
     const updateProfile = async (updates) => {
-        const { error } = await supabase.from('profiles_masjid').update(updates).eq('id', 1)
+        const { error } = await supabase.from('profiles_masjid').update(updates).eq('id', 1).select().single()
         if (error) throw error
         setProfile((prev) => ({ ...prev, ...updates }))
     }
@@ -149,7 +149,7 @@ export function DataProvider({ children }) {
     }
 
     const updatePengurus = async (id, updates) => {
-        const { error } = await supabase.from('pengurus').update(updates).eq('id', id)
+        const { error } = await supabase.from('pengurus').update(updates).eq('id', id).select().single()
         if (error) throw error
         setPengurus((prev) => prev.map((p) => (p.id === id ? { ...p, ...updates } : p)))
     }
@@ -171,7 +171,7 @@ export function DataProvider({ children }) {
     }
 
     const updateInventaris = async (id, updates) => {
-        const { error } = await supabase.from('inventaris').update({ ...updates, quantity: updates.quantity ? Number(updates.quantity) : 0 }).eq('id', id)
+        const { error } = await supabase.from('inventaris').update({ ...updates, quantity: updates.quantity ? Number(updates.quantity) : 0 }).eq('id', id).select().single()
         if (error) throw error
         setInventaris((prev) => prev.map((item) => (item.id === id ? { ...item, ...updates, quantity: updates.quantity ? Number(updates.quantity) : item.quantity } : item)))
     }
@@ -194,7 +194,7 @@ export function DataProvider({ children }) {
     }
 
     const updateJumatSchedule = async (id, updates) => {
-        const { error } = await supabase.from('jumat_schedules').update(updates).eq('id', id)
+        const { error } = await supabase.from('jumat_schedules').update(updates).eq('id', id).select().single()
         if (error) throw error
         setJumatSchedules((prev) =>
             prev.map((s) => (s.id === id ? { ...s, ...updates } : s)).sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal))
@@ -218,7 +218,7 @@ export function DataProvider({ children }) {
     }
 
     const updateZakatDistribution = async (id, updates) => {
-        const { error } = await supabase.from('zakat_qurban_distribution').update(updates).eq('id', id)
+        const { error } = await supabase.from('zakat_qurban_distribution').update(updates).eq('id', id).select().single()
         if (error) throw error
         setZakatDistribution((prev) =>
             prev.map((z) => (z.id === id ? { ...z, ...updates } : z)).sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal))
