@@ -8,7 +8,7 @@ export default function ProfileSettings() {
         name: profile?.name || '',
         description: profile?.description || '',
         logo: profile?.logo || '',
-        logoBgColor: profile?.logoBgColor || '#1B3C35', // default to primary
+        logo_bg_color: profile?.logo_bg_color || '#1B3C35', // default to primary
         address: profile?.address || '',
         phone: profile?.phone || '',
         email: profile?.email || '',
@@ -85,7 +85,7 @@ export default function ProfileSettings() {
                                     <div className="relative group shrink-0">
                                         <div
                                             className="w-32 h-32 rounded-2xl border border-gray-200 overflow-hidden flex items-center justify-center p-2"
-                                            style={{ backgroundColor: formData.logoBgColor }}
+                                            style={{ backgroundColor: formData.logo_bg_color }}
                                         >
                                             <img
                                                 src={formData.logo}
@@ -104,7 +104,7 @@ export default function ProfileSettings() {
                                 ) : (
                                     <div
                                         className="w-32 h-32 rounded-2xl border border-gray-200 flex flex-col items-center justify-center shrink-0"
-                                        style={{ backgroundColor: formData.logoBgColor, color: '#fff' }}
+                                        style={{ backgroundColor: formData.logo_bg_color, color: '#fff' }}
                                     >
                                         <Upload size={32} className="mb-2 opacity-50" />
                                         <span className="text-xs opacity-75">Kosong</span>
@@ -150,15 +150,15 @@ export default function ProfileSettings() {
                                         <div className="flex items-center gap-3">
                                             <input
                                                 type="color"
-                                                name="logoBgColor"
-                                                value={formData.logoBgColor}
+                                                name="logo_bg_color"
+                                                value={formData.logo_bg_color}
                                                 onChange={handleChange}
                                                 className="h-10 w-20 rounded cursor-pointer border-0 bg-transparent p-0"
                                             />
                                             <input
                                                 type="text"
-                                                name="logoBgColor"
-                                                value={formData.logoBgColor}
+                                                name="logo_bg_color"
+                                                value={formData.logo_bg_color}
                                                 onChange={handleChange}
                                                 placeholder="#HEX"
                                                 className="px-3 py-2 w-32 rounded-lg border border-gray-200 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none uppercase font-mono"
