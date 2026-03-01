@@ -147,6 +147,11 @@ CREATE TABLE IF NOT EXISTS public.profiles_masjid (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
 );
 
+ALTER TABLE public.profiles_masjid 
+ADD COLUMN IF NOT EXISTS facebook TEXT,
+ADD COLUMN IF NOT EXISTS instagram TEXT,
+ADD COLUMN IF NOT EXISTS youtube TEXT;
+
 ALTER TABLE public.profiles_masjid ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Public can view profiles_masjid" ON public.profiles_masjid;
 CREATE POLICY "Public can view profiles_masjid" ON public.profiles_masjid FOR SELECT USING (true);
