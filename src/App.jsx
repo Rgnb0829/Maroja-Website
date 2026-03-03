@@ -37,6 +37,7 @@ import JadwalJumatList from './pages/admin/JadwalJumatList'
 import JadwalJumatForm from './pages/admin/JadwalJumatForm'
 import ZakatList from './pages/admin/ZakatList'
 import ZakatForm from './pages/admin/ZakatForm'
+import PesanList from './pages/admin/PesanList'
 
 function App() {
     return (
@@ -94,6 +95,7 @@ function App() {
                             <Route path="zakat" element={<ZakatList />} />
                             <Route path="zakat/new" element={<ZakatForm />} />
                             <Route path="zakat/:id" element={<ZakatForm />} />
+                            <Route path="pesan" element={<PesanList />} />
                         </Route>
                     </Routes>
                 </AnimatePresence>

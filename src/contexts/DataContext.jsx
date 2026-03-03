@@ -25,6 +25,7 @@ export function DataProvider({ children }) {
     const [inventaris, setInventaris] = useState([])
     const [jumatSchedules, setJumatSchedules] = useState([])
     const [zakatDistribution, setZakatDistribution] = useState([])
+    const [contactMessages, setContactMessages] = useState([])
     const [isLoading, setIsLoading] = useState(true)
 
     // Initial Data Fetch
@@ -48,7 +49,8 @@ export function DataProvider({ children }) {
                     supabase.from('pengurus').select('*').order('id', { ascending: true }),
                     supabase.from('inventaris').select('*').order('name', { ascending: true }),
                     supabase.from('jumat_schedules').select('*').order('tanggal', { ascending: false }),
-                    supabase.from('zakat_qurban_distribution').select('*').order('tanggal', { ascending: false })
+                    supabase.from('zakat_qurban_distribution').select('*').order('tanggal', { ascending: false }),
+                    supabase.from('contact_messages').select('*').order('created_at', { ascending: false })
                 ])
 
                 setPosts(postsData || [])
@@ -58,6 +60,7 @@ export function DataProvider({ children }) {
                 setInventaris(inventarisData || [])
                 setJumatSchedules(jumatSchedulesData || [])
                 setZakatDistribution(zakatData || [])
+                setContactMessages(contactMessagesData || [])
             } catch (error) {
                 console.error("Error fetching initial data from Supabase:", error)
                 // Fallback to empty states if error
@@ -233,15 +236,41 @@ export function DataProvider({ children }) {
 
     const getZakatDistribution = (id) => zakatDistribution.find((z) => z.id === Number(id))
 
+    // Contact Messages CRUD
+    const addMessage = async (message) => {
+        const { data, error } = await supabase.from('contact_messages').insert([message]).select().single()
+        if (error) throw error
+        // Important: Public triggers this, but Admin will fetch it later or observe changes if real-time was active.
+        // We'll update the state just in case, even though public users don't need it. Admins will benefit.
+        setContactMessages((prev) => [data, ...prev])
+        return data
+    }
+
+    const markMessageAsRead = async (id) => {
+        const { error } = await supabase.from('contact_messages').update({ is_read: true }).eq('id', id).select().single()
+        if (error) throw error
+        setContactMessages((prev) => prev.map((msg) => (msg.id === id ? { ...msg, is_read: true } : msg)))
+    }
+
+    const deleteMessage = async (id) => {
+        const { error } = await supabase.from('contact_messages').delete().eq('id', id)
+        if (error) throw error
+        setContactMessages((prev) => prev.filter((msg) => msg.id !== id))
+    }
+
     return (
         <DataContext.Provider
             value={{
                 posts,
                 finance,
-                financeSummary,
+                financeSummary, // Kept financeSummary as it was in the original code
                 profile,
                 pengurus,
                 inventaris,
+                jumatSchedules,
+                zakatDistribution,
+                contactMessages,
+                isLoading,
                 addPost,
                 updatePost,
                 deletePost,
@@ -249,7 +278,7 @@ export function DataProvider({ children }) {
                 addTransaction,
                 updateTransaction,
                 deleteTransaction,
-                getTransaction,
+                getTransaction, // Kept getTransaction
                 updateProfile,
                 addPengurus,
                 updatePengurus,
@@ -259,16 +288,17 @@ export function DataProvider({ children }) {
                 updateInventaris,
                 deleteInventaris,
                 getInventarisItem,
-                jumatSchedules,
                 addJumatSchedule,
                 updateJumatSchedule,
                 deleteJumatSchedule,
-                getJumatSchedule,
-                zakatDistribution,
+                getJumatSchedule, // Kept getJumatSchedule
                 addZakatDistribution,
                 updateZakatDistribution,
                 deleteZakatDistribution,
-                getZakatDistribution
+                getZakatDistribution, // Kept getZakatDistribution
+                addMessage,
+                markMessageAsRead,
+                deleteMessage,
             }}
         >
             {children}

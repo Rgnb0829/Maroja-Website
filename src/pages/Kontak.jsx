@@ -12,7 +12,7 @@ const serviceTypes = [
 ]
 
 export default function Kontak() {
-    const { profile, isLoading } = useData()
+    const { profile, isLoading, addMessage } = useData()
     const [form, setForm] = useState({
         nama: '',
         phone: '',
@@ -20,14 +20,24 @@ export default function Kontak() {
         pesan: '',
     })
     const [submitted, setSubmitted] = useState(false)
+    const [isSubmitting, setIsSubmitting] = useState(false)
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
-        setSubmitted(true)
-        setTimeout(() => {
-            setSubmitted(false)
-            setForm({ nama: '', phone: '', layanan: '', pesan: '' })
-        }, 3000)
+        setIsSubmitting(true)
+        try {
+            await addMessage(form)
+            setSubmitted(true)
+            setTimeout(() => {
+                setSubmitted(false)
+                setForm({ nama: '', phone: '', layanan: '', pesan: '' })
+            }, 5000)
+        } catch (error) {
+            console.error("Error submitting message:", error)
+            alert("Gagal mengirim pesan. Silakan coba lagi nanti.")
+        } finally {
+            setIsSubmitting(false)
+        }
     }
 
     if (isLoading) {
@@ -247,10 +257,15 @@ export default function Kontak() {
 
                                     <button
                                         type="submit"
-                                        className="w-full bg-primary text-white px-6 py-3.5 rounded-xl font-semibold text-sm hover:bg-primary-light hover:shadow-lg hover:shadow-primary/20 transition-all duration-300 flex items-center justify-center gap-2"
+                                        disabled={isSubmitting}
+                                        className="w-full bg-primary text-white px-6 py-3.5 rounded-xl font-semibold text-sm hover:bg-primary-light hover:shadow-lg hover:shadow-primary/20 transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50"
                                     >
-                                        <Send size={16} />
-                                        Kirim Permohonan
+                                        {isSubmitting ? (
+                                            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                        ) : (
+                                            <Send size={16} />
+                                        )}
+                                        {isSubmitting ? 'Mengirim...' : 'Kirim Permohonan'}
                                     </button>
                                 </form>
                             )}

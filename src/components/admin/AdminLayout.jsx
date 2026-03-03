@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Newspaper, Wallet, Settings, Users, Box, LogOut, Menu, X, ChevronRight, UserCheck, CalendarDays, Gift } from 'lucide-react'
+import { LayoutDashboard, Newspaper, Wallet, Settings, Users, Box, LogOut, Menu, X, ChevronRight, UserCheck, CalendarDays, Gift, Inbox } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
 
 const sidebarLinks = [
@@ -11,6 +11,7 @@ const sidebarLinks = [
     { name: 'Kelola Keuangan', path: '/admin/keuangan', icon: Wallet },
     { name: 'Data Jamaah', path: '/admin/users', icon: UserCheck },
     { name: 'Kepengurusan', path: '/admin/pengurus', icon: Users },
+    { name: 'Pesan Layanan', path: '/admin/pesan', icon: Inbox },
     { name: 'Inventaris', path: '/admin/inventaris', icon: Box },
     { name: 'Profil Website', path: '/admin/profile', icon: Settings }
 ];

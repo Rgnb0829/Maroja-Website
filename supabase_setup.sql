@@ -251,3 +251,32 @@ DROP POLICY IF EXISTS "Admins can update zakat_qurban_distribution" ON public.za
 CREATE POLICY "Admins can update zakat_qurban_distribution" ON public.zakat_qurban_distribution FOR UPDATE USING (public.is_admin());
 DROP POLICY IF EXISTS "Admins can delete zakat_qurban_distribution" ON public.zakat_qurban_distribution;
 CREATE POLICY "Admins can delete zakat_qurban_distribution" ON public.zakat_qurban_distribution FOR DELETE USING (public.is_admin());
+
+-- 8. Tabel Pesan Kontak (contact_messages)
+CREATE TABLE IF NOT EXISTS public.contact_messages (
+    id SERIAL PRIMARY KEY,
+    nama TEXT NOT NULL,
+    phone TEXT NOT NULL,
+    layanan TEXT NOT NULL,
+    pesan TEXT NOT NULL,
+    is_read BOOLEAN DEFAULT false,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+ALTER TABLE public.contact_messages ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Publik bisa INSERT pesan (Tidak perlu login)
+DROP POLICY IF EXISTS "Public can insert contact_messages" ON public.contact_messages;
+CREATE POLICY "Public can insert contact_messages" ON public.contact_messages FOR INSERT WITH CHECK (true);
+
+-- Policy: Admin bisa SELECT pesan
+DROP POLICY IF EXISTS "Admins can view contact_messages" ON public.contact_messages;
+CREATE POLICY "Admins can view contact_messages" ON public.contact_messages FOR SELECT USING (public.is_admin());
+
+-- Policy: Admin bisa UPDATE pesan (tandai sudah dibaca)
+DROP POLICY IF EXISTS "Admins can update contact_messages" ON public.contact_messages;
+CREATE POLICY "Admins can update contact_messages" ON public.contact_messages FOR UPDATE USING (public.is_admin());
+
+-- Policy: Admin bisa DELETE pesan
+DROP POLICY IF EXISTS "Admins can delete contact_messages" ON public.contact_messages;
+CREATE POLICY "Admins can delete contact_messages" ON public.contact_messages FOR DELETE USING (public.is_admin());
