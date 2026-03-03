@@ -29,7 +29,7 @@ export function AuthProvider({ children }) {
 
         try {
             // Cek tabel profiles untuk role dan data verifikasi
-            const { data, error } = await supabase.from('users')
+            const { data, error } = await supabase.from('profiles')
                 .select('*')
                 .eq('id', authUser.id)
                 .single()
@@ -102,7 +102,7 @@ export function AuthProvider({ children }) {
         if (error) return { success: false, error: error.message }
 
         // Mencegah login jika bukan admin
-        const { data: profile } = await supabase.from('users').select('role').eq('id', data.user.id).single()
+        const { data: profile } = await supabase.from('profiles').select('role').eq('id', data.user.id).single()
         if (profile?.role !== 'admin' && profile?.role !== 'superadmin') {
             await supabase.auth.signOut()
             return { success: false, error: 'Akses Ditolak: Memerlukan privilege Admin.' }
