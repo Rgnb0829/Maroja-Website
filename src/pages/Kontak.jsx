@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { MapPin, Phone, Mail, Send, Truck, Heart, HelpCircle, Facebook, Instagram, Youtube } from 'lucide-react'
+import { Turnstile } from '@marsidev/react-turnstile'
 import { useData } from '../contexts/DataContext'
 
 const serviceTypes = [
@@ -21,9 +22,16 @@ export default function Kontak() {
     })
     const [submitted, setSubmitted] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const [turnstileToken, setTurnstileToken] = useState(null)
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+
+        if (!turnstileToken) {
+            alert("Harap selesaikan verifikasi keamanan (CAPTCHA) terlebih dahulu.")
+            return
+        }
+
         setIsSubmitting(true)
         try {
             await addMessage(form)
@@ -255,9 +263,20 @@ export default function Kontak() {
                                         />
                                     </div>
 
+                                    {/* Cloudflare Turnstile */}
+                                    <div className="flex justify-center my-6">
+                                        <Turnstile
+                                            siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'}
+                                            onSuccess={(token) => setTurnstileToken(token)}
+                                            onError={() => setTurnstileToken(null)}
+                                            onExpire={() => setTurnstileToken(null)}
+                                            options={{ theme: 'light' }}
+                                        />
+                                    </div>
+
                                     <button
                                         type="submit"
-                                        disabled={isSubmitting}
+                                        disabled={isSubmitting || !turnstileToken}
                                         className="w-full bg-primary text-white px-6 py-3.5 rounded-xl font-semibold text-sm hover:bg-primary-light hover:shadow-lg hover:shadow-primary/20 transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50"
                                     >
                                         {isSubmitting ? (
