@@ -41,7 +41,8 @@ export function DataProvider({ children }) {
                     { data: pengurusData },
                     { data: inventarisData },
                     { data: jumatSchedulesData },
-                    { data: zakatData }
+                    { data: zakatData },
+                    { data: contactMessagesData }
                 ] = await Promise.all([
                     supabase.from('posts').select('*').order('date', { ascending: false }),
                     supabase.from('finance').select('*').order('date', { ascending: false }),
