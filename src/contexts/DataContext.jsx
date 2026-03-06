@@ -238,12 +238,10 @@ export function DataProvider({ children }) {
 
     // Contact Messages CRUD
     const addMessage = async (message) => {
-        const { data, error } = await supabase.from('contact_messages').insert([message]).select().single()
+        const { error } = await supabase.from('contact_messages').insert([message])
         if (error) throw error
-        // Important: Public triggers this, but Admin will fetch it later or observe changes if real-time was active.
-        // We'll update the state just in case, even though public users don't need it. Admins will benefit.
-        setContactMessages((prev) => [data, ...prev])
-        return data
+        // We cannot use .select() because public users only have INSERT permission, not SELECT.
+        // The message will be safely stored in the database for admins to fetch later.
     }
 
     const markMessageAsRead = async (id) => {
