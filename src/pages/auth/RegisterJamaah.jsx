@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate, Navigate, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Mail, Lock, User, MapPin, AlertCircle, ChevronRight, CheckCircle2 } from 'lucide-react'
+import { Turnstile } from '@marsidev/react-turnstile'
 import { useAuth } from '../../contexts/AuthContext'
 
 export default function RegisterJamaah() {
@@ -19,6 +20,7 @@ export default function RegisterJamaah() {
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const [success, setSuccess] = useState(false)
+    const [turnstileToken, setTurnstileToken] = useState('')
 
     if (isAuthenticated && !success) {
         if (user?.role === 'admin' || user?.role === 'superadmin') {
@@ -36,6 +38,11 @@ export default function RegisterJamaah() {
 
         if (!form.email || !form.password || !form.fullName || !form.address) {
             setError('Semua field wajib diisi')
+            return
+        }
+
+        if (!turnstileToken) {
+            setError('Silakan verifikasi CAPTCHA terlebih dahulu')
             return
         }
 
@@ -237,10 +244,30 @@ export default function RegisterJamaah() {
                                 </div>
                             </div>
 
+                            {/* Cloudflare Turnstile */}
+                            <div className="flex justify-center mt-4 mb-2">
+                                <Turnstile
+                                    siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'}
+                                    onSuccess={(token) => {
+                                        setTurnstileToken(token)
+                                        setError('')
+                                    }}
+                                    onError={() => setError('Gagal memverifikasi CAPTCHA. Silakan muat ulang halaman.')}
+                                    onExpire={() => {
+                                        setTurnstileToken('')
+                                        setError('CAPTCHA kedaluwarsa, silakan centang kembali.')
+                                    }}
+                                    options={{
+                                        theme: 'light',
+                                        size: 'normal'
+                                    }}
+                                />
+                            </div>
+
                             <button
                                 type="submit"
-                                disabled={loading}
-                                className="w-full flex justify-center items-center gap-2 py-3 px-4 mt-4 border border-transparent rounded-xl shadow-md text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all disabled:opacity-70"
+                                disabled={loading || !turnstileToken}
+                                className="w-full flex justify-center items-center gap-2 py-3 px-4 mt-4 border border-transparent rounded-xl shadow-md text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all disabled:opacity-70 disabled:cursor-not-allowed"
                             >
                                 {loading ? (
                                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
