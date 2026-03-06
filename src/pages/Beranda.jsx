@@ -90,7 +90,7 @@ export default function Beranda() {
                             className="inline-flex items-center gap-2 bg-white/10 rounded-full px-4 py-2 mb-6"
                         >
                             <span className="w-2 h-2 bg-mint rounded-full animate-pulse" />
-                            <span className="text-white/80 text-sm font-medium">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</span>
+                            <span className="text-white/80 text-sm font-medium">السَّلاَمُ عَلَيْكُمْ</span>
                         </motion.div>
 
                         <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-white mb-6 leading-[1.1]">

@@ -43,8 +43,8 @@ export default function LoginJamaah() {
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 islamic-pattern">
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
-                <div className="w-20 h-20 bg-primary/10 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-sm border border-primary/20">
-                    <span className="text-primary font-bold text-4xl">م</span>
+                <div className="w-20 h-20 bg-primary/10 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-sm border border-primary/20 p-2">
+                    <img src="/logo.png" alt="Logo Masjid" className="w-full h-full object-contain drop-shadow-sm" />
                 </div>
                 <h2 className="text-center text-3xl font-extrabold text-gray-900">
                     Sistem Jamaah
