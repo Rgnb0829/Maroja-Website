@@ -1,7 +1,10 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, QrCode, Smartphone, Download } from 'lucide-react'
+import { useData } from '../contexts/DataContext'
 
 export default function QrisModal({ isOpen, onClose }) {
+    const { profile } = useData()
+
     return (
         <AnimatePresence>
             {isOpen && (
@@ -39,9 +42,15 @@ export default function QrisModal({ isOpen, onClose }) {
                         <div className="p-6">
                             <div className="bg-gray-50 rounded-xl p-6 mb-4 border-2 border-dashed border-primary/20">
                                 <div className="aspect-square max-w-[220px] mx-auto bg-white rounded-lg flex flex-col items-center justify-center p-4 border border-gray-200">
-                                    <QrCode size={80} className="text-primary/30 mb-3" />
-                                    <p className="text-xs text-gray-400 text-center">QRIS Code</p>
-                                    <p className="text-xs text-gray-400 text-center">akan ditampilkan di sini</p>
+                                    {profile?.qris_image ? (
+                                        <img src={profile.qris_image} alt="QRIS Infaq Masjid" className="w-full h-full object-contain rounded-lg" />
+                                    ) : (
+                                        <>
+                                            <QrCode size={80} className="text-primary/30 mb-3" />
+                                            <p className="text-xs text-gray-400 text-center">QRIS Code</p>
+                                            <p className="text-xs text-gray-400 text-center">akan ditampilkan di sini</p>
+                                        </>
+                                    )}
                                 </div>
                             </div>
 
@@ -60,7 +69,7 @@ export default function QrisModal({ isOpen, onClose }) {
 
                             {/* Download Button */}
                             <a
-                                href="/qris-placeholder.png" // Ganti dengan path gambar QRIS asli nanti
+                                href={profile?.qris_image || "/qris-placeholder.png"}
                                 download="QRIS-Masjid-Raudhatul-Jannah.png"
                                 className="w-full flex items-center justify-center gap-2 bg-primary text-white py-3.5 rounded-xl font-semibold hover:bg-primary-dark hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-[0.98]"
                             >

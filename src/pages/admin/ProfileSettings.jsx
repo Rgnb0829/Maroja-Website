@@ -15,6 +15,7 @@ export default function ProfileSettings() {
         facebook: profile?.facebook || '',
         instagram: profile?.instagram || '',
         youtube: profile?.youtube || '',
+        qris_image: profile?.qris_image || '',
     })
     const [isSaving, setIsSaving] = useState(false)
 
@@ -169,6 +170,76 @@ export default function ProfileSettings() {
                             </div>
                         </div>
 
+                        {/* QRIS Upload */}
+                        <div className="space-y-4 md:col-span-2 pt-6 border-t border-gray-100 mt-2">
+                            <label className="text-sm font-medium text-gray-700">Gambar QRIS Masjid (Untuk Infaq Digital)</label>
+
+                            <div className="flex flex-col sm:flex-row items-start gap-6">
+                                {/* Preview QRIS */}
+                                {formData.qris_image ? (
+                                    <div className="relative group shrink-0">
+                                        <div className="w-48 h-48 rounded-2xl border-2 border-dashed border-primary/20 bg-gray-50 overflow-hidden flex items-center justify-center p-2">
+                                            <img
+                                                src={formData.qris_image}
+                                                alt="QRIS Preview"
+                                                className="w-full h-full object-contain"
+                                            />
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={() => setFormData(prev => ({ ...prev, qris_image: '' }))}
+                                            className="absolute inset-0 bg-black/50 text-white rounded-2xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                        >
+                                            Hapus
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div className="w-48 h-48 rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50 flex flex-col items-center justify-center shrink-0">
+                                        <Upload size={32} className="mb-2 text-gray-400" />
+                                        <span className="text-xs text-gray-500">Belum ada QRIS</span>
+                                    </div>
+                                )}
+
+                                {/* Controls QRIS */}
+                                <div className="flex-1 space-y-4 w-full">
+                                    {/* Image Upload */}
+                                    <div>
+                                        <input
+                                            type="file"
+                                            id="qris-upload"
+                                            accept="image/png, image/jpeg, image/jpg"
+                                            onChange={(e) => {
+                                                const file = e.target.files?.[0]
+                                                if (file) {
+                                                    // Limit file size to ~1MB
+                                                    if (file.size > 1.5 * 1024 * 1024) {
+                                                        alert("Ukuran gambar terlalu besar! Maksimal 1.5 MB.");
+                                                        e.target.value = '';
+                                                        return;
+                                                    }
+                                                    const reader = new FileReader()
+                                                    reader.onloadend = () => {
+                                                        setFormData(prev => ({ ...prev, qris_image: reader.result }))
+                                                    }
+                                                    reader.readAsDataURL(file)
+                                                }
+                                            }}
+                                            className="hidden"
+                                        />
+                                        <label
+                                            htmlFor="qris-upload"
+                                            className="inline-flex items-center justify-center px-6 py-2 border border-gray-300 rounded-xl text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer transition-colors"
+                                        >
+                                            Upload Gambar QRIS
+                                        </label>
+                                        <p className="mt-2 text-xs text-gray-500">
+                                            Format: JPG atau PNG. Pastikan gambar jelas agar mudah di-scan oleh jamaah. Maksimal 1.5 MB.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         {/* Telepon */}
                         <div className="space-y-2">
                             <label className="text-sm font-medium text-gray-700">Telepon / WhatsApp</label>
@@ -277,8 +348,8 @@ export default function ProfileSettings() {
                             )}
                         </button>
                     </div>
-                </form>
-            </div>
-        </div>
+                </form >
+            </div >
+        </div >
     )
 }
