@@ -57,8 +57,8 @@ export default function UserList() {
     }
 
     const filteredUsers = users.filter(user =>
-        user.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.address?.toLowerCase().includes(searchTerm.toLowerCase())
+        (user.full_name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (user.address_block || '').toLowerCase().includes(searchTerm.toLowerCase())
     )
 
     return (
@@ -150,7 +150,7 @@ export default function UserList() {
                                             <div className="text-xs text-gray-500">ID: {user.id.substring(0, 8)}...</div>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
-                                            <span className="text-sm text-gray-600">{user.address || '-'}</span>
+                                            <span className="text-sm text-gray-600">{user.address_block || '-'}</span>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-center">
                                             <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${user.is_verified

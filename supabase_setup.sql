@@ -61,9 +61,16 @@ USING (
 CREATE OR REPLACE FUNCTION public.handle_new_user() 
 RETURNS TRIGGER AS $$
 BEGIN
-  INSERT INTO public.profiles (id, phone_number, role, is_verified)
-  -- Jika mendaftar admin manual, role di set ke 'jamaah' dulu, nanti admin ubah manual ke 'admin'
-  VALUES (new.id, new.phone, 'jamaah', false);
+  INSERT INTO public.profiles (id, phone_number, full_name, address_block, role, is_verified)
+  -- Data metadata disimpan di "data" object saat Supabase SignUp, ini diambil via raw_user_meta_data
+  VALUES (
+    new.id, 
+    new.phone, 
+    new.raw_user_meta_data->>'full_name',
+    new.raw_user_meta_data->>'address',
+    'jamaah', 
+    false
+  );
   RETURN new;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
